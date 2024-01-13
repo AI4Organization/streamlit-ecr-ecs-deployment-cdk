@@ -4,11 +4,11 @@ This repository contains the AWS Cloud Development Kit (CDK) code for deploying 
 
 ## Architecture
 
-![Streamlit Architecture](StreamlitArchitect.png)
+![Streamlit Architecture](assets/StreamlitArchitect.png)
 
 ## Running App
 
-![Running Streamlit App](StreamlitApp.png)
+![Running Streamlit App](assets/StreamlitApp.png)
 
 ## Table of Contents
 
