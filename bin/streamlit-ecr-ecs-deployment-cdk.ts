@@ -1,21 +1,71 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
+
 import * as cdk from 'aws-cdk-lib';
-import { StreamlitEcrEcsDeploymentCdkStack } from '../lib/streamlit-ecr-ecs-deployment-cdk-stack';
+import * as dotenv from 'dotenv';
+import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
+import { checkEnvVariables } from '../utils/check-environment-variable';
+import { parsePlatforms } from '../utils/parsing-platform-variable';
+import { CdkStreamlitEcrEcsAppRunnerDeploymentStack } from '../lib/streamlit-ecr-ecs-apprunner-deployment-cdk-stack';
+import { CdkStreamlitFargateDeploymentStack } from '../lib/streamlit-ecr-ecs-fargate-deployment-cdk-stack';
 
+dotenv.config(); // Load environment variables from .env file
 const app = new cdk.App();
-new StreamlitEcrEcsDeploymentCdkStack(app, 'StreamlitEcrEcsDeploymentCdkStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+const { CDK_DEFAULT_ACCOUNT: account, CDK_DEFAULT_REGION: region } = process.env;
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+const cdkRegions = process.env.CDK_DEPLOY_REGIONS?.split(',') ?? [region]; // Parsing comma separated list of regions
+const deployEnvironments = process.env.ENVIRONMENTS?.split(',') ?? ['dev']; // Parsing comma separated list of environments
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
-});
+export const LATEST_IMAGE_VERSION = 'latest';
+
+// check general stack props
+checkEnvVariables('ECR_REPOSITORY_NAME', 'APP_NAME', 'IMAGE_VERSION', 'PORT', 'PLATFORMS');
+
+const appName = process.env.APP_NAME!;
+console.log(`process.env.PLATFORMS: ${process.env.PLATFORMS}`);
+const platforms = parsePlatforms(process.env.PLATFORMS!.split(','));
+
+for (const cdkRegion of cdkRegions) {
+  for (const environment of deployEnvironments) {
+    for (const platform of platforms) {
+      const platformString = platform === Platform.LINUX_AMD64 ? 'amd64' : 'arm';
+      console.log(`platformString: ${platformString}, deployRegion: ${cdkRegion}, environment: ${environment}`);
+      // new CdkStreamlitEcrEcsAppRunnerDeploymentStack(app, `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitEcrEcsAppRunnerDeploymentStack`, {
+      //   env: {
+      //     account,
+      //     region: cdkRegion,
+      //   },
+      //   tags: {
+      //     environment,
+      //     appName: appName,
+      //     AppManagerCFNStackKey: 'true',
+      //   },
+      //   deployRegion: cdkRegion,
+      //   environment,
+      //   platformString,
+      //   appName,
+      //   stackName: `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitEcrEcsAppRunnerDeploymentStack`,
+      //   description: `Streamlit ECR/ECS with AppRunner deployment stack for ${environment} environment in ${cdkRegion} region, platform: ${platformString}.`,
+      // });
+
+      new CdkStreamlitFargateDeploymentStack(app, `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitFargateDeploymentStack`, {
+        env: {
+          account,
+          region: cdkRegion,
+        },
+        tags: {
+          environment,
+          appName: appName,
+          AppManagerCFNStackKey: 'true',
+        },
+        deployRegion: cdkRegion,
+        environment,
+        platformString,
+        appName,
+        stackName: `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitFargateDeploymentStack`,
+        description: `Streamlit ECR/ECS with AppRunner deployment stack for ${environment} environment in ${cdkRegion} region, platform: ${platformString}.`,
+      });
+    }
+  }
+}
