@@ -18,7 +18,7 @@ import { StreamlitEcsStackProps } from './StreamlitEcsStackProps';
  *
  * @extends cdk.Stack
  */
-export class CdkStreamlitEcrEcsFargateCloudFrontDeploymentStack extends cdk.Stack {
+export class CdkStreamlitFargateDeploymentStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props: StreamlitBaseStackProps) {
         super(scope, id, props);
 

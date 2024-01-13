@@ -7,6 +7,7 @@ import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
 import { checkEnvVariables } from '../utils/check-environment-variable';
 import { parsePlatforms } from '../utils/parsing-platform-variable';
 import { CdkStreamlitEcrEcsAppRunnerDeploymentStack } from '../lib/streamlit-ecr-ecs-apprunner-deployment-cdk-stack';
+import { CdkStreamlitFargateDeploymentStack } from '../lib/streamlit-ecr-ecs-fargate-deployment-cdk-stack';
 
 dotenv.config(); // Load environment variables from .env file
 const app = new cdk.App();
@@ -30,7 +31,25 @@ for (const cdkRegion of cdkRegions) {
     for (const platform of platforms) {
       const platformString = platform === Platform.LINUX_AMD64 ? 'amd64' : 'arm';
       console.log(`platformString: ${platformString}, deployRegion: ${cdkRegion}, environment: ${environment}`);
-      new CdkStreamlitEcrEcsAppRunnerDeploymentStack(app, `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitEcrEcsAppRunnerDeploymentStack`, {
+      // new CdkStreamlitEcrEcsAppRunnerDeploymentStack(app, `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitEcrEcsAppRunnerDeploymentStack`, {
+      //   env: {
+      //     account,
+      //     region: cdkRegion,
+      //   },
+      //   tags: {
+      //     environment,
+      //     appName: appName,
+      //     AppManagerCFNStackKey: 'true',
+      //   },
+      //   deployRegion: cdkRegion,
+      //   environment,
+      //   platformString,
+      //   appName,
+      //   stackName: `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitEcrEcsAppRunnerDeploymentStack`,
+      //   description: `Streamlit ECR/ECS with AppRunner deployment stack for ${environment} environment in ${cdkRegion} region, platform: ${platformString}.`,
+      // });
+
+      new CdkStreamlitFargateDeploymentStack(app, `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitFargateDeploymentStack`, {
         env: {
           account,
           region: cdkRegion,
@@ -44,7 +63,7 @@ for (const cdkRegion of cdkRegions) {
         environment,
         platformString,
         appName,
-        stackName: `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitEcrEcsAppRunnerDeploymentStack`,
+        stackName: `${appName}-${environment}-${cdkRegion}-${platformString}-CdkStreamlitFargateDeploymentStack`,
         description: `Streamlit ECR/ECS with AppRunner deployment stack for ${environment} environment in ${cdkRegion} region, platform: ${platformString}.`,
       });
     }
