@@ -29,7 +29,7 @@ export class StreamlitEcrDeploymentCdkStack extends cdk.NestedStack {
   constructor(scope: Construct, id: string, props: StreamlitEcrStackProps) {
     super(scope, id, props);
 
-    this.ecrRepository = new ecr.Repository(this, `${props.appName}-${props.environment}-DockerImageEcrRepository`, {
+    this.ecrRepository = new ecr.Repository(this, `${props.appName}-${props.environment}-${props.platformString}-DockerImageEcrRepository`, {
       repositoryName: props.repositoryName,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       emptyOnDelete: true,
@@ -54,15 +54,15 @@ export class StreamlitEcrDeploymentCdkStack extends cdk.NestedStack {
     }
 
     // print out ecrRepository arn
-    new cdk.CfnOutput(this, `${props.appName}-${props.environment}-ECRRepositoryArn`, {
+    new cdk.CfnOutput(this, `${props.appName}-${props.environment}-${props.platformString}-ECRRepositoryArn`, {
       value: this.ecrRepository.repositoryArn,
-      exportName: `${props.appName}-${props.environment}-ECRRepositoryArn`,
+      exportName: `${props.appName}-${props.environment}-${props.platformString}-ECRRepositoryArn`,
     });
 
     // print out ecrRepository repository name
-    new cdk.CfnOutput(this, `${props.appName}-${props.environment}-ECRRepositoryName`, {
+    new cdk.CfnOutput(this, `${props.appName}-${props.environment}-${props.platformString}-ECRRepositoryName`, {
       value: this.ecrRepository.repositoryName,
-      exportName: `${props.appName}-${props.environment}-ECRRepositoryName`,
+      exportName: `${props.appName}-${props.environment}-${props.platformString}-ECRRepositoryName`,
     });
   }
 }
