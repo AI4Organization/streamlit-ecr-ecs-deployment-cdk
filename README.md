@@ -2,6 +2,14 @@
 
 This repository contains the AWS Cloud Development Kit (CDK) code for deploying a Streamlit application using Amazon Elastic Container Registry (ECR) and Amazon Elastic Container Service (ECS).
 
+## Architecture
+
+![Streamlit Architecture](StreamlitArchitect.png)
+
+## Running App
+
+![Running Streamlit App](StreamlitApp.png)
+
 ## Table of Contents
 
 1. [Introduction](#introduction)
@@ -12,7 +20,6 @@ This repository contains the AWS Cloud Development Kit (CDK) code for deploying 
 6. [Usage](#usage)
 7. [Testing](#testing)
 8. [Utilities](#utilities)
-9. [Contributing](#contributing)
 
 ## Introduction
 
