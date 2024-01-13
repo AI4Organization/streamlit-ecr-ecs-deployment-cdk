@@ -1,4 +1,4 @@
-# README.md for Streamlit ECR/ECS Deployment CDK Repository
+# Streamlit ECR/ECS Deployment CDK Repository
 
 This repository contains the AWS Cloud Development Kit (CDK) code for deploying a Streamlit application using Amazon Elastic Container Registry (ECR) and Amazon Elastic Container Service (ECS).
 
