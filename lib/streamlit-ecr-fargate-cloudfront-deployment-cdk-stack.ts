@@ -43,27 +43,9 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
         console.log(`containerPort: ${containerPort}`);
 
         const existingVpc = props.vpc;
-        const httpSG = new ec2.SecurityGroup(this, `${props.appName}-${props.environment}-${props.platformString}-HttpSG`, {
-            vpc: existingVpc,
-            allowAllOutbound: true,
-        });
 
-        httpSG.addIngressRule(
-            ec2.Peer.anyIpv4(),
-            ec2.Port.tcp(80)
-        );
-
-        const httpsSG = new ec2.SecurityGroup(this, `${props.appName}-${props.environment}-${props.platformString}-HttpsSG`, {
-            vpc: existingVpc,
-            allowAllOutbound: true,
-        });
-        httpsSG.addIngressRule(
-            ec2.Peer.anyIpv4(),
-            ec2.Port.tcp(443)
-        );
-
-        const loadBalancerSecurityGroup = new ec2.SecurityGroup(this, 'Streamlit-ALB-SecurityGroup', { vpc: existingVpc });
-        loadBalancerSecurityGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(80));
+        const loadBalancerSecurityGroup = new ec2.SecurityGroup(this, `${props.appName}-${props.environment}-${props.platformString}-Streamlit-ALB-SecGrp`, { vpc: existingVpc });
+        loadBalancerSecurityGroup.addIngressRule(ec2.Peer.ipv4('0.0.0.0/0'), ec2.Port.tcp(80)); // allow all inbound traffic on port 80
 
         const ecsSecurityGroup = new ec2.SecurityGroup(this, 'Streamlit-ECS-SecurityGroup', { vpc: existingVpc, allowAllOutbound: true });
         ecsSecurityGroup.addIngressRule(loadBalancerSecurityGroup, ec2.Port.tcp(80));
@@ -78,7 +60,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
         });
 
         // Task Role
-        const taskRole = new iam.Role(this, "ecsTaskExecutionRole", {
+        const taskRole = new iam.Role(this, `${props.appName}-${props.environment}-${props.platformString}-ecsTaskExecutionRole`, {
             assumedBy: new iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
         });
 
@@ -107,7 +89,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
 
         const loadBalancer = new elbv2.ApplicationLoadBalancer(
             this,
-            "StreamlitLoadBalancer",
+            `${props.appName}-${props.environment}-${props.platformString}-StreamlitLoadBalancer`,
             {
                 vpc: props.vpc,
                 securityGroup: loadBalancerSecurityGroup,
