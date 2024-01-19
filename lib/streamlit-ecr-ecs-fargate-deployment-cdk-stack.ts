@@ -7,6 +7,7 @@ import { StreamlitEcrStackProps } from './StreamlitEcrStackProps';
 import { StreamlitEcrDeploymentCdkStack } from './streamlit-ecr-deployment-cdk-stack';
 import { StreamlitVpcDeploymentCdkStack } from './streamlit-vpc-deployment-cdk-stack';
 import { StreamlitEcsStackProps } from './StreamlitEcsStackProps';
+import { CdkFargateFrontWithVpcDeploymentStack as CdkFargateCloudFrontWithVpcDeploymentStack } from './streamlit-ecr-fargate-cloudfront-deployment-cdk-stack';
 
 /**
  * Represents a CDK stack for deploying Langfuse ECR and ECS resources.
@@ -57,10 +58,16 @@ export class CdkStreamlitFargateDeploymentStack extends cdk.Stack {
             vpc: vpcStack.vpc,
         };
 
-        new CdkFargateWithVpcDeploymentStack(this, `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateWithVpcDeploymentStack`, {
+        // new CdkFargateWithVpcDeploymentStack(this, `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateWithVpcDeploymentStack`, {
+        //     ...ecsStackProps,
+        //     stackName: `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateWithVpcDeploymentStack`,
+        //     description: `Langfuse Fargate deployment stack for ${props.environment} environment in ${props.deployRegion} region.`,
+        // });
+
+        new CdkFargateCloudFrontWithVpcDeploymentStack(this, `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateCloudFrontWithVpcDeploymentStack`, {
             ...ecsStackProps,
-            stackName: `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateWithVpcDeploymentStack`,
-            description: `Langfuse Fargate deployment stack for ${props.environment} environment in ${props.deployRegion} region.`,
+            stackName: `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateCloudFrontWithVpcDeploymentStack`,
+            description: `Streamlit App Runner deployment stack for ${props.environment} environment in ${props.deployRegion} region.`,
         });
     }
 }
