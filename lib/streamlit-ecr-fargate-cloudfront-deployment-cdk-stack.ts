@@ -115,8 +115,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
             cpu: 1024,
             memoryLimitMiB: 2048,
             desiredCount: 1,
-            publicLoadBalancer: true,
-            platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
+            platformVersion: ecs.FargatePlatformVersion.LATEST,
             runtimePlatform: {
                 cpuArchitecture: props.platformString === `arm` ? ecs.CpuArchitecture.ARM64 : ecs.CpuArchitecture.X86_64,
                 operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
@@ -137,9 +136,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
             healthyHttpCodes: "200-499", // We have to check for 401 as the default state of "/" is unauthenticated
         });
 
-        // ********************************
         // Cloudfront Distribution
-        // ********************************
         const streamlitOriginRequestPolicy = new OriginRequestPolicy(
             this,
             `${props.appName}-${props.environment}-${props.platformString}-OriginRequestPolicy`,
