@@ -210,8 +210,8 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
         });
 
         new cdk.CfnOutput(this, `${props.appName}-${props.environment}-${props.platformString}-StreamlitURL`, {
-            value: streamlitDistribution.distributionDomainName,
-            description: "Streamlit Distribution URL",
+            value: `https://${streamlitDistribution.distributionDomainName}`,
+            description: "Streamlit CloudFront Distribution URL.",
             exportName: `${props.appName}-${props.environment}-${props.platformString}-StreamlitDistributionURL`,
         });
     }
