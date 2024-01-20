@@ -110,7 +110,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
                 enableLogging: true,
                 logDriver,
             },
-            loadBalancer: loadBalancer,
+            loadBalancer,
             securityGroups: [ecsSecurityGroup],
             cpu: 1024,
             memoryLimitMiB: 2048,
@@ -167,7 +167,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
                     return event.request;
                 }
             `),
-        });
+        }); // todo convert this functions to arm64 function
 
         const streamlitDistribution = new Distribution(this, `${props.appName}-${props.environment}-${props.platformString}-StreamlitDistribution`, {
             defaultBehavior: {
@@ -175,17 +175,21 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
                     protocolPolicy: OriginProtocolPolicy.HTTP_ONLY,
                 }),
                 originRequestPolicy: streamlitOriginRequestPolicy,
-                responseHeadersPolicy: ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS_WITH_PREFLIGHT,
+                responseHeadersPolicy: ResponseHeadersPolicy.CORS_ALLOW_ALL_ORIGINS,
                 cachePolicy: CachePolicy.CACHING_DISABLED,
                 allowedMethods: AllowedMethods.ALLOW_ALL,
+                compress: true,
+                viewerProtocolPolicy: cdk.aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 functionAssociations: [
                     {
                         function: cors,
                         eventType: FunctionEventType.VIEWER_REQUEST,
                     },
                 ],
+                // todo test remove functionAssociations
             },
-            minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2019,
+            minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+            comment: "CloudFront distribution for Streamlit frontend application",
         });
 
         new cdk.CfnOutput(this, `${props.appName}-${props.environment}-${props.platformString}-StreamlitURL`, {
