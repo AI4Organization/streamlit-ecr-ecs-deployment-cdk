@@ -150,7 +150,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
         );
 
         /** Fixes Cors Issue */
-        const cors = new Function(this, `${props.appName}-${props.environment}-${props.platformString}-CorsFunction`, {
+        const corsFunction = new Function(this, `${props.appName}-${props.environment}-${props.platformString}-CorsFunction`, {
             code: FunctionCode.fromInline(`
                 function handler(event) {
                     if(event.request.method === 'OPTIONS') {
@@ -167,7 +167,7 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
                     return event.request;
                 }
             `),
-        }); // todo convert this functions to arm64 function
+        });
 
         const streamlitDistribution = new Distribution(this, `${props.appName}-${props.environment}-${props.platformString}-StreamlitDistribution`, {
             defaultBehavior: {
@@ -182,14 +182,13 @@ export class CdkFargateFrontWithVpcDeploymentStack extends cdk.NestedStack {
                 viewerProtocolPolicy: cdk.aws_cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 functionAssociations: [
                     {
-                        function: cors,
+                        function: corsFunction,
                         eventType: FunctionEventType.VIEWER_REQUEST,
                     },
                 ],
-                // todo test remove functionAssociations
             },
             minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
-            comment: "CloudFront distribution for Streamlit frontend application",
+            comment: "CloudFront distribution for Streamlit frontend application.",
         });
 
         new cdk.CfnOutput(this, `${props.appName}-${props.environment}-${props.platformString}-StreamlitURL`, {

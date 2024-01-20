@@ -11,3 +11,5 @@ cdk.out
 .DS_Store
 cdk.context.json
 .aider*
+*package-lock.json
+!./package-lock.json
