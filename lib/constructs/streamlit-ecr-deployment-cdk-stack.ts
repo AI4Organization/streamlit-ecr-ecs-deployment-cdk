@@ -40,7 +40,7 @@ export class StreamlitEcrDeploymentCdkStack extends cdk.NestedStack {
     this.ecrRepository.addLifecycleRule({ maxImageCount: 4, rulePriority: 2, tagStatus: ecr.TagStatus.ANY }); // keep last 4 images
 
     const dockerImageAsset = new DockerImageAsset(this, `${props.appName}-${props.environment}-DockerImageAsset`, {
-      directory: path.join(__dirname, '../coreservices'),
+      directory: path.join(__dirname, '../../coreservices'),
       platform: props.platformString === `arm` ? Platform.LINUX_ARM64 : Platform.LINUX_AMD64,
       file: 'Dockerfile',
       cacheDisabled: true, // build image from scratch
