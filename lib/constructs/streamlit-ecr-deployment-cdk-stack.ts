@@ -5,7 +5,7 @@ import * as ecrDeploy from 'cdk-ecr-deployment';
 import * as ecr from 'aws-cdk-lib/aws-ecr';
 import { DockerImageAsset, Platform } from 'aws-cdk-lib/aws-ecr-assets';
 import { StreamlitEcrStackProps } from './StreamlitEcrStackProps';
-import { LATEST_IMAGE_VERSION } from '../bin/streamlit-ecr-ecs-deployment-cdk';
+import { LATEST_IMAGE_VERSION } from '../../bin/streamlit-ecr-ecs-deployment-cdk';
 
 /**
  * Represents a CDK stack for deploying Docker images to an Amazon ECR repository.

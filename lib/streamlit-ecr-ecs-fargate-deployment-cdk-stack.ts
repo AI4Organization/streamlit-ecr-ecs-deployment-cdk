@@ -1,13 +1,12 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { IEnvTypes } from '../process-env-typed';
-import { CdkFargateWithVpcDeploymentStack } from './streamlit-ecr-fargate-deployment-cdk-stack';
-import { StreamlitBaseStackProps } from './StreamlitBaseStackProps';
-import { StreamlitEcrStackProps } from './StreamlitEcrStackProps';
-import { StreamlitEcrDeploymentCdkStack } from './streamlit-ecr-deployment-cdk-stack';
-import { StreamlitVpcDeploymentCdkStack } from './streamlit-vpc-deployment-cdk-stack';
-import { StreamlitEcsStackProps } from './StreamlitEcsStackProps';
-import { CdkFargateFrontWithVpcDeploymentStack as CdkFargateCloudFrontWithVpcDeploymentStack } from './streamlit-ecr-fargate-cloudfront-deployment-cdk-stack';
+import { StreamlitBaseStackProps } from './constructs/StreamlitBaseStackProps';
+import { StreamlitEcrStackProps } from './constructs/StreamlitEcrStackProps';
+import { StreamlitEcrDeploymentCdkStack } from './constructs/streamlit-ecr-deployment-cdk-stack';
+import { StreamlitVpcDeploymentCdkStack } from './constructs/streamlit-vpc-deployment-cdk-stack';
+import { StreamlitEcsStackProps } from './constructs/StreamlitEcsStackProps';
+import { CdkFargateFrontWithVpcDeploymentStack as CdkFargateCloudFrontWithVpcDeploymentStack } from './constructs/streamlit-ecr-fargate-cloudfront-deployment-cdk-stack';
 
 /**
  * Represents a CDK stack for deploying Langfuse ECR and ECS resources.
@@ -57,12 +56,6 @@ export class CdkStreamlitFargateDeploymentStack extends cdk.Stack {
             ecrRepository: ecrStack.ecrRepository,
             vpc: vpcStack.vpc,
         };
-
-        // new CdkFargateWithVpcDeploymentStack(this, `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateWithVpcDeploymentStack`, {
-        //     ...ecsStackProps,
-        //     stackName: `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateWithVpcDeploymentStack`,
-        //     description: `Langfuse Fargate deployment stack for ${props.environment} environment in ${props.deployRegion} region.`,
-        // });
 
         new CdkFargateCloudFrontWithVpcDeploymentStack(this, `${envTyped.APP_NAME}-${props.environment}-${props.deployRegion}-CdkFargateCloudFrontWithVpcDeploymentStack`, {
             ...ecsStackProps,
