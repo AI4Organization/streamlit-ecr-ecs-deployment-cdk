@@ -1,11 +1,11 @@
-import * as cdk from "aws-cdk-lib";
-import * as ec2 from "aws-cdk-lib/aws-ec2";
-import * as iam from "aws-cdk-lib/aws-iam";
-import * as logs from "aws-cdk-lib/aws-logs";
+import * as cdk from 'aws-cdk-lib';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as logs from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
-import { FlowLogTrafficType } from "aws-cdk-lib/aws-ec2";
-import { RetentionDays } from "aws-cdk-lib/aws-logs";
-import { StreamlitEcrStackProps } from "./StreamlitEcrStackProps";
+import { FlowLogTrafficType } from 'aws-cdk-lib/aws-ec2';
+import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { StreamlitEcrStackProps } from './StreamlitEcrStackProps';
 
 /**
  * Represents a CDK stack for deploying a VPC suitable for ECS deployments.
@@ -23,7 +23,7 @@ export class StreamlitVpcDeploymentCdkStack extends cdk.NestedStack {
         new cdk.CfnOutput(this, `${props.appName}-${props.environment}-${props.deployRegion}-vpc-id`, {
             value: this.vpc.vpcId,
             exportName: `${props.appName}-${props.environment}-${props.deployRegion}-vpc-id`,
-            description: "VPC ID",
+            description: `${props.appName}-${props.environment}-${props.deployRegion}-VPC ID.`,
         });
     }
 }
@@ -63,9 +63,9 @@ export function createVPC(stack: cdk.Stack, props: StreamlitEcrStackProps): ec2.
     vpc.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY);
 
     const vpcFlowLogRole = new iam.Role(stack, `${props.appName}-${props.environment}-RoleVpcFlowLogs`, {
-        assumedBy: new iam.ServicePrincipal("vpc-flow-logs.amazonaws.com"),
+        assumedBy: new iam.ServicePrincipal('vpc-flow-logs.amazonaws.com'),
         managedPolicies: [
-            iam.ManagedPolicy.fromAwsManagedPolicyName("CloudWatchFullAccess"),
+            iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchFullAccess'),
         ],
     });
 
